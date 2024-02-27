@@ -117,17 +117,22 @@ func main() {
 }
 
 func getPatternDir() (string, error) {
-	usr, err := user.Current()
-	if err != nil {
-		return "", err
-	}
-	path := filepath.Join(usr.HomeDir, ".config/gf")
-	if _, err := os.Stat(path); !os.IsNotExist(err) {
-		// .config/gf exists
-		return path, nil
-	}
-	return filepath.Join(usr.HomeDir, ".gf"), nil
+    // 获取当前工作目录
+    cwd, err := os.Getwd()
+    if err != nil {
+        return "", err
+    }
+
+    // 拼接路径
+    path := filepath.Join(cwd, ".config/gf")
+    if _, err := os.Stat(path); !os.IsNotExist(err) {
+        // 如果.config/gf存在
+        return path, nil
+    }
+    // 如果.config/gf不存在，使用当前目录下的.gf
+    return filepath.Join(cwd, ".gf"), nil
 }
+
 
 func savePattern(name, flags, pat string) error {
 	if name == "" {
